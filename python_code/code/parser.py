@@ -64,6 +64,12 @@ def mapIpsToCountries(unique_ips):
 
 
 def getRequestsPerIP(data, unique_ips=[]):
+    '''
+
+    :param data: total requests
+    :param unique_ips: the list of the unique ips
+    :return: the total requests for every ip
+    '''
     if unique_ips == []:
         unique_ips = getUniqueIPs(data)
     unique_ips = list(unique_ips)
