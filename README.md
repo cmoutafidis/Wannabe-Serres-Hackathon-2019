@@ -1,2 +1,2 @@
 # Wannabe-Serres-Hackathon-2019
-Developement Team: Wannabe Programmers
+Development Team: Wannabe Programmers
