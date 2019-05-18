@@ -21,16 +21,27 @@ class databaseHandler:
 
     def selectAllRecords(self):
         self.cur.execute("SELECT * FROM requests")
-        return self.cur.fetchall()
+        return self.getResults(self.cur)
 
     def selectAllOK(self):
         self.cur.execute("SELECT * FROM requests WHERE request_type = 'OK'")
-        return self.cur.fetchall()
+        return self.getResults(self.cur)
 
     def selectAllNotOK(self):
         self.cur.execute("SELECT * FROM requests WHERE request_type != 'OK'")
-        return self.cur.fetchall()
+        return self.getResults(self.cur)
 
     def selectAllOfType(self, requestType):
         self.cur.execute("SELECT * FROM requests WHERE request_type = '" + requestType + "'")
-        return self.cur.fetchall()
+        return self.getResults(self.cur)
+
+    def getResults(self, db_cursor):
+        desc = [d[0] for d in db_cursor.description]
+        results = [dotdict(dict(zip(desc, res))) for res in db_cursor.fetchall()]
+        return results
+
+
+class dotdict(dict):
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
