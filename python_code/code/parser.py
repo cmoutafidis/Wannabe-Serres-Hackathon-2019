@@ -1,4 +1,6 @@
 import apache_log_parser
+
+
 # from pprint import pprint
 
 def getTotalRequests(FileName):
@@ -7,12 +9,16 @@ def getTotalRequests(FileName):
     :param FileName:
     :return:
     '''
-    file = open(FileName, 'r')
-    line_parser = apache_log_parser.make_parser("%h %l %u %t \"%r\" %>s %b")
     data = []
-    for line in file:
-        log_line_data = line_parser(line)
-        data.append(log_line_data)
+    for i in range(1, 11):
+        file = open(FileName + str(i), 'r')
+        line_parser = apache_log_parser.make_parser("%h %l %u %t \"%r\" %>s %b")
+        for line in file:
+            try:
+                log_line_data = line_parser(line)
+            except apache_log_parser.LineDoesntMatchException:
+                pass  # cache possible empty strings
+            data.append(log_line_data)
     return data
 
 
@@ -42,9 +48,10 @@ def getUniqueIPs(data):
     return unique_ips
 
 
-data = getTotalRequests("access_log")
+data = getTotalRequests("../daily-logs/website-access.log.")
+# print(len(data))
 
-# print("Total number of requests: "+str(len(data)))
-# print("Number of 5xx requests: " + str(get5xxRequests(data)))
-# for ip in getUniqueIPs(data):
-#     print(ip)
+print("Total number of requests: "+str(len(data)))
+print("Number of 5xx requests: " + str(get5xxRequests(data)))
+for ip in getUniqueIPs(data):
+    print(ip)
