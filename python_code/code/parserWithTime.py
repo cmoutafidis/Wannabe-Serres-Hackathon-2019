@@ -10,7 +10,7 @@ def getRequestsPerHour(data):
     return requestsPerHour
 
 
-# data = getTotalRequests("../daily-logs/website-access.log.")
+data = getTotalRequests("../daily-logs/website-access.log.")
 
 # for hour in getRequestsPerHour(data):
 #     print(hour)
