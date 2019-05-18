@@ -70,7 +70,7 @@ def getRequestsPerIP(data, unique_ips=[]):
     requestPerIp = [0 for ip in unique_ips]
     for request in data:
         requestPerIp[unique_ips.index(request.get("remote_host"))] += 1
-    return requestPerIp
+    return unique_ips,requestPerIp
 
 # data = getTotalRequests("../daily-logs/website-access.log.")
 # dictionary=mapIpsToCountries(getUniqueIPs(data))
