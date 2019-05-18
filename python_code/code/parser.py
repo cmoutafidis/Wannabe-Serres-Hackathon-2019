@@ -48,10 +48,9 @@ def getUniqueIPs(data):
     return unique_ips
 
 
-data = getTotalRequests("../daily-logs/website-access.log.")
-# print(len(data))
+# data = getTotalRequests("../daily-logs/website-access.log.")
 
-print("Total number of requests: "+str(len(data)))
-print("Number of 5xx requests: " + str(get5xxRequests(data)))
-for ip in getUniqueIPs(data):
-    print(ip)
+# print("Total number of requests: "+str(len(data)))
+# print("Number of 5xx requests: " + str(get5xxRequests(data)))
+# for ip in getUniqueIPs(data):
+#     print(ip)
