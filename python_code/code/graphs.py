@@ -1,8 +1,6 @@
 from code.parserWithTime import getRequestsPerHour
 from code.parser import getTotalRequests
-
 import matplotlib.pyplot as plt
-
 plt.rcdefaults()
 import numpy as np
 

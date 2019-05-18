@@ -1,4 +1,5 @@
 import apache_log_parser
+import requests
 
 
 # from pprint import pprint
@@ -48,7 +49,34 @@ def getUniqueIPs(data):
     return unique_ips
 
 
-# data = getTotalRequests("../daily-logs/website-access.log.")
+def mapIpsToCountries(unique_ips):
+    mapping = dict()
+
+    for ip in unique_ips:
+        URL = "http://ip-api.com/json/" + str(ip)
+        r = requests.get(url = URL)
+        data=r.json()
+        country=  data['country']
+        if country not in mapping:
+            mapping[country] = []
+        mapping[country].append(ip)
+    return mapping
+
+
+
+data = getTotalRequests("../daily-logs/website-access.log.")
+dictionary=mapIpsToCountries(getUniqueIPs(data))
+for element in dictionary.values():
+    print(element)
+# GEOIP = pygeoip.GeoIP("../GeoIP.dat", pygeoip.MEMORY_CACHE)
+# print(GEOIP.country_name_by_addr(addr="220.243.135.5"))
+#
+# for ip in getUniqueIPs(data):
+#     print(ip)
+# ip="115.221.121.44"
+# r = requests.get(url="http://ip-api.com/json/"+ip)
+# data=r.json()
+# print(data)
 
 # print("Total number of requests: "+str(len(data)))
 # print("Number of 5xx requests: " + str(get5xxRequests(data)))
