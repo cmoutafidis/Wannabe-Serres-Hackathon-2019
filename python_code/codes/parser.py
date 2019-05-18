@@ -51,7 +51,7 @@ def getUniqueIPs(data):
 
 def mapIpsToCountries(unique_ips):
     mapping = dict()
-
+    mapCountryToCode=dict()
     for ip in unique_ips:
         URL = "http://ip-api.com/json/" + str(ip)
         r = requests.get(url=URL)
@@ -59,8 +59,10 @@ def mapIpsToCountries(unique_ips):
         country = data['country']
         if country not in mapping:
             mapping[country] = []
+            mapCountryToCode[country]=data['countryCode']
         mapping[country].append(ip)
-    return mapping
+
+    return mapping,mapCountryToCode
 
 
 def getRequestsPerIP(data, unique_ips=[]):
