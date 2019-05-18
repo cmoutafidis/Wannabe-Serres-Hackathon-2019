@@ -1,4 +1,4 @@
-from code.parser import getTotalRequests
+from codes.parser import getTotalRequests
 import datetime
 
 
