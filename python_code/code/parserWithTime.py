@@ -1,4 +1,4 @@
-import parser as p
+from code.parser import getTotalRequests
 import datetime
 
 
@@ -10,7 +10,7 @@ def getRequestsPerHour(data):
     return requestsPerHour
 
 
-data = p.getTotalRequests("access_log")
+data = getTotalRequests("../daily-logs/website-access.log.")
 
 # for hour in getRequestsPerHour(data):
 #     print(hour)
