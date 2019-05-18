@@ -71,7 +71,6 @@ def getDataFrame(myData):
         country=list(pycountry.countries)[i]
         if df.loc[df['Code'] == country.alpha_3].empty:
             temp=pd.DataFrame([[country.name,country.alpha_3,0]], columns=['Country', 'Code', 'Requests'])
-            # df.append(temp,ignore_index=True)
             df=pd.concat([df,temp])
     return df
 
@@ -130,4 +129,4 @@ def worldGraph(myData):
 
 
 data = getTotalRequests("../daily-logs/website-access.log.")
-
+worldGraph(data)
