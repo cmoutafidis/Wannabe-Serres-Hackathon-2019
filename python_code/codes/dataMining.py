@@ -1,5 +1,5 @@
 import operator
-from code.parser import getTotalRequests
+from codes.parser import getTotalRequests
 from urllib.parse import unquote
 
 restrictedSQLInjectionCharacters = ["'", ' or ', ' and ']
