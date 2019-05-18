@@ -27,6 +27,13 @@ DATABASE_CONFIG = {
                       response_bytes_clf VARCHAR(255) NULL,
                       request_type VARCHAR(45) NULL DEFAULT 'OK',
                       PRIMARY KEY (id));
+    ""","""CREATE TABLE IF NOT EXISTS apachelogs.uniqueips (
+                      id INT NOT NULL AUTO_INCREMENT,
+                      ip VARCHAR(255) NULL,
+                      country VARCHAR(255) NULL,
+                      totalRequests INT NULL,
+                      code VARCHAR(255) NULL,
+                      PRIMARY KEY (id));
     """
     ]
 }

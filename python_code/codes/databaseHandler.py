@@ -1,5 +1,6 @@
 import mysql.connector
 from codes.config import DATABASE_CONFIG
+import pycountry
 
 
 class databaseHandler:
@@ -39,6 +40,20 @@ class databaseHandler:
         desc = [d[0] for d in db_cursor.description]
         results = [dotdict(dict(zip(desc, res))) for res in db_cursor.fetchall()]
         return results
+
+    def updateRecordsType(self, records, type):
+        ids = ", ".join(str(x) for x in records)
+        self.cur.execute("UPDATE requests SET request_type = '" + type + "' WHERE id in (" + ids + ")")
+        self.con.commit()
+
+    def insertUniqueIp(self, ip, country, countryCode):
+        cCode = pycountry.countries.get(alpha_2=countryCode).alpha_3
+        self.cur.execute("INSERT INTO uniqueips (ip, country, totalRequests, code) VALUES (%s, %s, %s, %s)", (ip, country, 0, cCode))
+        self.con.commit()
+
+    def countUniqueIps(self):
+        self.cur.execute("SELECT COUNT(*) as 'ipcount' from requests GROUP BY(remote_host)")
+        return self.getResults(self.cur)
 
 
 class dotdict(dict):

@@ -1,26 +1,18 @@
 import apache_log_parser
 import requests
+import codes.databaseHandler as databaseHandler
 
 
 # from pprint import pprint
 
-def getTotalRequests(FileName):
+def getTotalRequests():
     '''
 
     :param FileName:
     :return:
     '''
-    data = []
-    for i in range(1, 11):
-        file = open(FileName + str(i), 'r')
-        line_parser = apache_log_parser.make_parser("%h %l %u %t \"%r\" %>s %b")
-        for line in file:
-            try:
-                log_line_data = line_parser(line)
-            except apache_log_parser.LineDoesntMatchException:
-                pass  # cache possible empty strings
-            data.append(log_line_data)
-    return data
+    db = databaseHandler.databaseHandler()
+    return db.selectAllOK()
 
 
 # getting the requests that got 5xx
@@ -49,20 +41,14 @@ def getUniqueIPs(data):
     return unique_ips
 
 
-def mapIpsToCountries(unique_ips):
-    mapping = dict()
-    mapCountryToCode=dict()
+def insertUniqueIps(unique_ips):
     for ip in unique_ips:
         URL = "http://ip-api.com/json/" + str(ip)
         r = requests.get(url=URL)
         data = r.json()
-        country = data['country']
-        if country not in mapping:
-            mapping[country] = []
-            mapCountryToCode[country]=data['countryCode']
-        mapping[country].append(ip)
+        db = databaseHandler.databaseHandler()
+        db.insertUniqueIp(ip, data['country'], data['countryCode'])
 
-    return mapping,mapCountryToCode
 
 
 def getRequestsPerIP(data, unique_ips=[]):
@@ -80,12 +66,10 @@ def getRequestsPerIP(data, unique_ips=[]):
         requestPerIp[unique_ips.index(request.get("remote_host"))] += 1
     return unique_ips,requestPerIp
 
-# data = getTotalRequests("../daily-logs/website-access.log.")
-# dictionary=mapIpsToCountries(getUniqueIPs(data))
-# for element in dictionary.values():
-#     print(element)
 
-
+# data = getTotalRequests()
+# insertUniqueIps(getUniqueIPs(data))
+#
 # print("Total number of requests: "+str(len(data)))
 # print("Number of 5xx requests: " + str(get5xxRequests(data)))
 # for ip in getUniqueIPs(data):

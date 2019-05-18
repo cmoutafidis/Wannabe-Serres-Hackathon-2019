@@ -1,6 +1,6 @@
 import operator
-from codes.parser import getTotalRequests
 from urllib.parse import unquote
+import codes.databaseHandler as databaseHandler
 
 restrictedSQLInjectionCharacters = ["'", ' or ', ' and ']
 restrictedXSSCharacters = ['http://', 'https://', '<script', 'script>', '<?php', '?>']
@@ -30,7 +30,7 @@ def getMatchesInList(restrictDict):
     for index, request in enumerate(data):
         for restrictedChar in restrictDict:
             if restrictedChar in unquote(request.get('request_url_query')).replace(" ", "").lower():
-                curDict[str(index)] = unquote(request.get('request_url'))
+                curDict[str(index)] = request.get('id')
                 break
     return curDict
 
@@ -40,7 +40,7 @@ def getMatchesInListWithoutStringStrip(restrictDict):
     for index, request in enumerate(data):
         for restrictedChar in restrictDict:
             if restrictedChar in unquote(request.get('request_url_query')).lower():
-                curDict[str(index)] = unquote(request.get('request_url'))
+                curDict[str(index)] = request.get('id')
                 break
     return curDict
 
@@ -48,10 +48,6 @@ def getMatchesInListWithoutStringStrip(restrictDict):
 def printMatches(curDict):
     for request in curDict:
         print(curDict.get(request))
-
-
-def loadData():
-    return getTotalRequests('../daily-logs/website-access.log.')
 
 
 def getUniqueAttackRequests(sqlDict, xssDict, lfiDict):
@@ -89,8 +85,9 @@ def getMostAttackedWebsites(uniqueRequests):
     return maxims
 
 
-data = loadData()
-print('Data are loaded')
+db = databaseHandler.databaseHandler()
+
+data = db.selectAllRecords()
 sqlDict = getSQLInjectionRequests()
 xssDict = getXSSRequests()
 lfiDict = getLFIRequests()
@@ -99,6 +96,10 @@ print('Data len: ' + str(len(data)))
 print('SQL Injection Requests: ' + str(len(sqlDict.keys())))
 print('XSS Requests: ' + str(len(xssDict.keys())))
 print('LFI Requests: ' + str(len(lfiDict.keys())))
+
+db.updateRecordsType(sqlDict.values(), 'SQLI')
+db.updateRecordsType(xssDict.values(), 'XSS')
+db.updateRecordsType(lfiDict.values(), 'LFI')
 
 uniqueRequests = getUniqueAttackRequests(sqlDict, xssDict, lfiDict)
 
