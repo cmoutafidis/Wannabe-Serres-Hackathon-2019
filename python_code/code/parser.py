@@ -54,29 +54,29 @@ def mapIpsToCountries(unique_ips):
 
     for ip in unique_ips:
         URL = "http://ip-api.com/json/" + str(ip)
-        r = requests.get(url = URL)
-        data=r.json()
-        country=  data['country']
+        r = requests.get(url=URL)
+        data = r.json()
+        country = data['country']
         if country not in mapping:
             mapping[country] = []
         mapping[country].append(ip)
     return mapping
 
 
+def getRequestsPerIP(data, unique_ips=[]):
+    if unique_ips == []:
+        unique_ips = getUniqueIPs(data)
+    unique_ips = list(unique_ips)
+    requestPerIp = [0 for ip in unique_ips]
+    for request in data:
+        requestPerIp[unique_ips.index(request.get("remote_host"))] += 1
+    return requestPerIp
 
-data = getTotalRequests("../daily-logs/website-access.log.")
-dictionary=mapIpsToCountries(getUniqueIPs(data))
-for element in dictionary.values():
-    print(element)
-# GEOIP = pygeoip.GeoIP("../GeoIP.dat", pygeoip.MEMORY_CACHE)
-# print(GEOIP.country_name_by_addr(addr="220.243.135.5"))
-#
-# for ip in getUniqueIPs(data):
-#     print(ip)
-# ip="115.221.121.44"
-# r = requests.get(url="http://ip-api.com/json/"+ip)
-# data=r.json()
-# print(data)
+# data = getTotalRequests("../daily-logs/website-access.log.")
+# dictionary=mapIpsToCountries(getUniqueIPs(data))
+# for element in dictionary.values():
+#     print(element)
+
 
 # print("Total number of requests: "+str(len(data)))
 # print("Number of 5xx requests: " + str(get5xxRequests(data)))
