@@ -61,11 +61,11 @@ def getUniqueAttackRequests(sqlDict, xssDict, lfiDict):
     return uniqueRequests
 
 
-def getPercentageOfServerAttackRequests(uniqueRequests):
+def getPercentageOfServerAttackRequests(uniqueRequests,data):
     return float(len(uniqueRequests))/float(len(data)) * 100
 
 
-def getMostAttackedWebsites(uniqueRequests):
+def getMostAttackedWebsites(uniqueRequests,data):
     maxims = dict()
     websites = dict()
     for item in uniqueRequests:
@@ -85,27 +85,27 @@ def getMostAttackedWebsites(uniqueRequests):
     return maxims
 
 
-db = databaseHandler.databaseHandler()
-
-data = db.selectAllRecords()
-sqlDict = getSQLInjectionRequests()
-xssDict = getXSSRequests()
-lfiDict = getLFIRequests()
-
-print('Data len: ' + str(len(data)))
-print('SQL Injection Requests: ' + str(len(sqlDict.keys())))
-print('XSS Requests: ' + str(len(xssDict.keys())))
-print('LFI Requests: ' + str(len(lfiDict.keys())))
-
-db.updateRecordsType(sqlDict.values(), 'SQLI')
-db.updateRecordsType(xssDict.values(), 'XSS')
-db.updateRecordsType(lfiDict.values(), 'LFI')
-
-uniqueRequests = getUniqueAttackRequests(sqlDict, xssDict, lfiDict)
-
-print('Percentage of requests that are attacks: ' + format(getPercentageOfServerAttackRequests(uniqueRequests), '.2f') + "%")
-maxims = getMostAttackedWebsites(uniqueRequests)
-
-print('Most Visited Websites:')
-for item in maxims:
-    print(item + ": " + str(maxims.get(item)))
+# db = databaseHandler.databaseHandler()
+#
+# data = db.selectAllRecords()
+# sqlDict = getSQLInjectionRequests()
+# xssDict = getXSSRequests()
+# lfiDict = getLFIRequests()
+#
+# print('Data len: ' + str(len(data)))
+# print('SQL Injection Requests: ' + str(len(sqlDict.keys())))
+# print('XSS Requests: ' + str(len(xssDict.keys())))
+# print('LFI Requests: ' + str(len(lfiDict.keys())))
+#
+# db.updateRecordsType(sqlDict.values(), 'SQLI')
+# db.updateRecordsType(xssDict.values(), 'XSS')
+# db.updateRecordsType(lfiDict.values(), 'LFI')
+#
+# uniqueRequests = getUniqueAttackRequests(sqlDict, xssDict, lfiDict)
+#
+# print('Percentage of requests that are attacks: ' + format(getPercentageOfServerAttackRequests(uniqueRequests), '.2f') + "%")
+# maxims = getMostAttackedWebsites(uniqueRequests)
+#
+# print('Most Visited Websites:')
+# for item in maxims:
+#     print(item + ": " + str(maxims.get(item)))
