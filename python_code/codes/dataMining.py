@@ -7,25 +7,25 @@ restrictedXSSCharacters = ['http://', 'https://', '<script', 'script>', '<?php',
 restrictedLFICharacters = ['../', '\\x', 'ls+-l']
 
 
-def getSQLInjectionRequests():
-    curDict = getMatchesInListWithoutStringStrip(restrictedSQLInjectionCharacters)
+def getSQLInjectionRequests(data):
+    curDict = getMatchesInListWithoutStringStrip(data, restrictedSQLInjectionCharacters)
     # printMatches(curDict)
     return curDict
 
 
-def getXSSRequests():
-    curDict = getMatchesInList(restrictedXSSCharacters)
+def getXSSRequests(data):
+    curDict = getMatchesInList(data, restrictedXSSCharacters)
     # printMatches(curDict)
     return curDict
 
 
-def getLFIRequests():
-    curDict = getMatchesInList(restrictedLFICharacters)
+def getLFIRequests(data):
+    curDict = getMatchesInList(data, restrictedLFICharacters)
     # printMatches(curDict)
     return curDict
 
 
-def getMatchesInList(restrictDict):
+def getMatchesInList(data, restrictDict):
     curDict = dict()
     for index, request in enumerate(data):
         for restrictedChar in restrictDict:
@@ -35,7 +35,7 @@ def getMatchesInList(restrictDict):
     return curDict
 
 
-def getMatchesInListWithoutStringStrip(restrictDict):
+def getMatchesInListWithoutStringStrip(data, restrictDict):
     curDict = dict()
     for index, request in enumerate(data):
         for restrictedChar in restrictDict:

@@ -15,15 +15,15 @@ def printFirstQuestion(first, second, third):
     print(' Σύνολο μοναδικών IPs: ' + str(third))
 
 
-def executeSecondQuestion(allRecords,allNotOK,db):
-    sqlDict = dm.getSQLInjectionRequests()
-    xssDict = dm.getXSSRequests()
-    lfiDict = dm.getLFIRequests()
+def executeSecondQuestion(allRecords, allNotOK, db):
+    sqlDict = dm.getSQLInjectionRequests(allRecords)
+    xssDict = dm.getXSSRequests(allRecords)
+    lfiDict = dm.getLFIRequests(allRecords)
 
     uniqueRequests = dm.getUniqueAttackRequests(sqlDict, xssDict, lfiDict)
     print('Data Mining: ')
 
-    print('Percentage of requests that are attacks: ' + format(dm.getPercentageOfServerAttackRequests(uniqueRequests,allRecords),
+    print('Percentage of requests that are attacks: ' + format(dm.getPercentageOfServerAttackRequests(uniqueRequests, allRecords),
                                                                '.2f') + "%")
     print('SQL Injection Requests: ' + str(len(sqlDict.keys())))
     print('XSS Requests: ' + str(len(xssDict.keys())))
@@ -48,9 +48,5 @@ db = databaseHandler.databaseHandler()
 allNotOk = db.selectAllNotOK()
 allRecords = db.selectAllRecords()
 
-
-
-
-
 executeFirstQuestion(allRecords)
-executeSecondQuestion(allRecords,allNotOk,db)
+executeSecondQuestion(allRecords, allNotOk, db)
