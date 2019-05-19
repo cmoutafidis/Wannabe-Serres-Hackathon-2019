@@ -1,5 +1,6 @@
 import mysql.connector
 from codes.config import DATABASE_CONFIG
+from codes.parserWithTime import getRequestsPerHour
 import pycountry
 
 
@@ -32,6 +33,10 @@ class databaseHandler:
         self.cur.execute("SELECT * FROM requests WHERE request_type != 'OK'")
         return self.getResults(self.cur)
 
+    def selectAllNotOKPerHour(self):
+        self.cur.execute("SELECT * FROM requests WHERE request_type != 'OK'")
+        return getRequestsPerHour(self.getResults(self.cur))
+
     def selectAllOfType(self, requestType):
         self.cur.execute("SELECT * FROM requests WHERE request_type = '" + requestType + "'")
         return self.getResults(self.cur)
@@ -53,7 +58,15 @@ class databaseHandler:
 
     def countUniqueIps(self):
         self.cur.execute("SELECT COUNT(*) as 'ipcount' from requests GROUP BY(remote_host)")
+        return len(self.getResults(self.cur))
+
+    def selectAllUniqueIps(self):
+        self.cur.execute("SELECT country, sum(totalRequests) as 'totalReq' FROM uniqueips GROUP BY(country)")
         return self.getResults(self.cur)
+
+    def getCountryOfIp(self, ip):
+        self.cur.execute("SELECT country, code FROM uniqueips WHERE ip = '" + ip + "'")
+        return self.getResults(self.cur)[0]
 
 
 class dotdict(dict):

@@ -1,5 +1,6 @@
 import codes.databaseHandler as databaseHandler
 import codes.parser as parser
+import datetime
 
 
 def executeFirstQuestion():
@@ -10,10 +11,11 @@ def printFirstQuestion(first, second, third):
     print('Γενικά: ')
     print(' 1: ' + str(format(first, ".2f")) + '%')
     print(' 2: ' + str(second))
-    print(' 3: ' + str(len(third)))
+    print(' 3: ' + str(third))
 
 
 db = databaseHandler.databaseHandler()
 allNotOk = db.selectAllNotOK()
-allRecords = db.selectAllRecords()
-executeFirstQuestion()
+# allRecords = db.selectAllRecords()
+
+# executeFirstQuestion()

@@ -1,4 +1,4 @@
-from codes.parser import getTotalRequests
+from codes.parser import getTotalRequests, getTotalUniqueIps, getNotOkRequestsPerHour
 import matplotlib.pyplot as plt
 
 plt.rcdefaults()
@@ -6,7 +6,6 @@ import numpy as np
 import plotly
 import plotly.graph_objs as go
 import pandas as pd
-from codes.parser import mapIpsToCountries
 from codes.parser import getUniqueIPs
 from codes.parser import getRequestsPerIP
 import pycountry
@@ -32,21 +31,22 @@ def make_autopct(values):
     return my_autopct
 
 
-def requestsPerCountry(unique_ips, requestsPerIp, dictOfCountries):
-    countries = [country for country in dictOfCountries.keys()]
-    requestsPerCountry = [0 for i in countries]
-    for index, country in enumerate(countries):
-        ips = dictOfCountries[country]
-        for ip in ips:
-            requestsPerCountry[index] += requestsPerIp[unique_ips.index(ip)]
+def reqsPerCountry(data):
+    countries = []
+    requestsPerCountry = []
+    for d in data:
+        countries.append(d.country)
+        requestsPerCountry.append(int(d.totalReq))
+
     return countries, requestsPerCountry
 
 
-def getPieGraphForAllTheRequestsPerIp(unique_ips, requestsPerIp, dictOfCountries):
-    countries, requestPerCountry = requestsPerCountry(unique_ips, requestsPerIp, dictOfCountries)
+def getPieGraphForAllTheRequestsPerIp():
+    data = getTotalUniqueIps()
+    countries, requestPerCountry = reqsPerCountry(data)
     fig1, ax1 = plt.subplots()
-    explode = [0.1 if k == max(requestsPerCountry) else 0 for k in requestsPerCountry]
-    ax1.pie(requestsPerCountry, labels=countries, autopct=make_autopct(requestsPerCountry), explode=explode,
+    explode = [0.1 if k == max(requestPerCountry) else 0 for k in requestPerCountry]
+    ax1.pie(requestPerCountry, labels=countries, autopct=make_autopct(requestPerCountry), explode=explode,
             shadow=False, startangle=90)
     # ax1.pie(requestsPerCountry, labels=countries, autopct="%1.1f%%", explode=explode,
     #        shadow=False, startangle=90)
@@ -59,7 +59,7 @@ def getDataFrame(myData):
     uniqueIPs = getUniqueIPs(myData)
     x1, x2 = mapIpsToCountries(uniqueIPs)
     x, requestsPerIp = getRequestsPerIP(myData, uniqueIPs)
-    countries, requestsPercountry = requestsPerCountry(list(uniqueIPs), requestsPerIp, x1)
+    countries, requestsPercountry = reqsPerCountry(list(uniqueIPs), requestsPerIp, x1)
     beforeDataFrame = []
     for index, country in enumerate(countries):
         if country == "Russia":
@@ -75,7 +75,8 @@ def getDataFrame(myData):
     return df
 
 
-def worldGraph(myData):
+def worldGraph():
+    print(getNotOkRequestsPerHour()[0])
     df = getDataFrame(myData)
     print(df)
     data = [go.Choropleth(
@@ -128,5 +129,7 @@ def worldGraph(myData):
     plotly.offline.plot(fig, filename='d3-world-map')
 
 
-data = getTotalRequests("../daily-logs/website-access.log.")
-worldGraph(data)
+# data = getTotalRequests()
+# getBarGraphRequestsPerHour(getRequestsPerHour(data))
+# getPieGraphForAllTheRequestsPerIp()
+worldGraph()

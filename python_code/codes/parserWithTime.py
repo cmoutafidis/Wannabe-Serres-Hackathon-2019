@@ -1,4 +1,3 @@
-from codes.parser import getTotalRequests
 import datetime
 
 
@@ -8,18 +7,18 @@ def getRequestsPerHour(data):
     :param data: total requests
     :return: requests pre hour
     '''
-    requestsPerHour = [0 for i in range(24)]
+    requestsPerHour = [[] for i in range(24)]
     for request in data:
         requestsPerHour[
-            datetime.datetime.strptime(request.get('time_received_tz_isoformat'), "%Y-%m-%dT%H:%M:%S+02:00").hour] += 1
+            datetime.datetime.strptime(request.get('time_received_tz_isoformat'), "%Y-%m-%dT%H:%M:%S+02:00").hour].append(request)
     return requestsPerHour
 
 
-# data = getTotalRequests("../daily-logs/website-access.log.")
-
+# data = getTotalRequests()
+#
 # for hour in getRequestsPerHour(data):
 #     print(hour)
-
+#
 # print(sum(getRequestsPerHour(data)))
 # print(data[0].keys())
 # print(data[0].values())

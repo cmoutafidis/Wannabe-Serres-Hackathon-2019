@@ -12,8 +12,33 @@ def getTotalRequests():
     :return:
     '''
     db = databaseHandler.databaseHandler()
-    return db.selectAllOK()
+    return db.selectAllRecords()
 
+
+def getTotalUniqueIps():
+    db = databaseHandler.databaseHandler()
+    return db.selectAllUniqueIps()
+
+
+def getNotOkRequestsPerHour():
+    db = databaseHandler.databaseHandler()
+    result = db.selectAllNotOKPerHour()
+    response=[dict() for i in range(24)]
+    actualResponse = [[] for i in range(24)]
+    for index, perHour in enumerate(result):
+        for singleRequest in perHour:
+            k = db.getCountryOfIp(singleRequest.remote_host)
+            if k.country + ',' + k.code not in response[index]:
+                response[index][k.country + ',' + k.code] = 0
+            response[index][k.country + ',' + k.code] += 1
+
+    for index, i in enumerate(response):
+        for j in i:
+            toAppend = j.split(',')
+            toAppend.append(i[j])
+            actualResponse[index].append(toAppend)
+
+    return actualResponse
 
 # getting the requests that got 5xx
 def get5xxRequests(data):
@@ -48,7 +73,6 @@ def insertUniqueIps(unique_ips):
         data = r.json()
         db = databaseHandler.databaseHandler()
         db.insertUniqueIp(ip, data['country'], data['countryCode'])
-
 
 
 def getRequestsPerIP(data, unique_ips=[]):
