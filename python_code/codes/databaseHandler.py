@@ -72,6 +72,10 @@ class databaseHandler:
         self.cur.execute("SELECT country, count(ip) as totalCount FROM uniqueips INNER JOIN requests ON requests.remote_host = uniqueips.ip WHERE requests.request_type != 'OK' GROUP BY(country) ORDER BY totalCount DESC LIMIT 1")
         return self.getResults(self.cur)[0]
 
+    def getRequestTypesPerIp(self):
+        self.cur.execute("SELECT remote_host as ip, COUNT(remote_host) as requests, sum(case when request_type = 'OK' then 1 else 0 end) ok, sum(case when request_type = 'SQLI' then 1 else 0 end) sqli, sum(case when request_type = 'XSS' then 1 else 0 end) xss, sum(case when request_type = 'LFI' then 1 else 0 end) lfi FROM apachelogs.requests GROUP BY(remote_host);")
+        return self.getResults(self.cur)
+
 
 class dotdict(dict):
     __getattr__ = dict.get
