@@ -55,18 +55,19 @@ def getPieGraphForAllTheRequestsPerIp():
     plt.savefig('RequestsPerCountry_PieChart.png', dpi=400)
 
 
-def getDataFrame(myData):
-    uniqueIPs = getUniqueIPs(myData)
-    x1, x2 = mapIpsToCountries(uniqueIPs)
-    x, requestsPerIp = getRequestsPerIP(myData, uniqueIPs)
-    countries, requestsPercountry = reqsPerCountry(list(uniqueIPs), requestsPerIp, x1)
-    beforeDataFrame = []
-    for index, country in enumerate(countries):
-        if country == "Russia":
-            country = 'Russian Federation'
-        beforeDataFrame.append([country, pycountry.countries.get(name=country).alpha_3, requestsPercountry[index]])
-    df = pd.DataFrame(beforeDataFrame, columns=['Country', 'Code', 'Requests'])
+def getDataFrame(beforeDataFrame):
+    # uniqueIPs = getUniqueIPs(myData)
+    # x1, x2 = mapIpsToCountries(uniqueIPs)
+    # x, requestsPerIp = getRequestsPerIP(myData, uniqueIPs)
+    # countries, requestsPercountry = reqsPerCountry(list(uniqueIPs), requestsPerIp, x1)
+    # beforeDataFrame = []
+    # for index, country in enumerate(countries):
+    #     if country == "Russia":
+    #         country = 'Russian Federation'
+    #     beforeDataFrame.append([country, pycountry.countries.get(name=country).alpha_3, requestsPercountry[index]])
+    # df = pd.DataFrame(beforeDataFrame, columns=['Country', 'Code', 'Requests'])
     # Append the rest with 0
+    df = pd.DataFrame(beforeDataFrame, columns=['Country', 'Code', 'Requests'])
     for i in range(len(pycountry.countries)):
         country=list(pycountry.countries)[i]
         if df.loc[df['Code'] == country.alpha_3].empty:
@@ -76,57 +77,58 @@ def getDataFrame(myData):
 
 
 def worldGraph():
-    print(getNotOkRequestsPerHour()[0])
-    df = getDataFrame(myData)
-    print(df)
-    data = [go.Choropleth(
-        locations=df['Code'],
-        z=df['Requests'],
-        text=df['Country'],
-        colorscale=[
-            [0, "rgb(5, 10, 172)"],
-            [0.35, "rgb(40, 60, 190)"],
-            [0.5, "rgb(70, 100, 245)"],
-            [0.6, "rgb(90, 120, 245)"],
-            [0.7, "rgb(106, 137, 247)"],
-            [1, "rgb(220, 220, 220)"]
-        ],
-        autocolorscale=False,
-        reversescale=True,
-        marker=go.choropleth.Marker(
-            line=go.choropleth.marker.Line(
-                color='rgb(180,180,180)',
-                width=0.5
-            )),
-        colorbar=go.choropleth.ColorBar(
-            tickprefix='',
-            title='Amount of Requests'),
-    )]
-
-    layout = go.Layout(
-        title=go.layout.Title(
-            text='Reequests to Server'
-        ),
-        geo=go.layout.Geo(
-            showframe=False,
-            showcoastlines=False,
-            projection=go.layout.geo.Projection(
-                type='equirectangular'
-            )
-        ),
-        annotations=[go.layout.Annotation(
-            x=0.55,
-            y=0.1,
-            xref='paper',
-            yref='paper',
-            text='Source: ',
-            showarrow=False
+    data = getNotOkRequestsPerHour()
+    for index,hour in enumerate(data):
+        df = getDataFrame(hour)
+        print(df)
+        data = [go.Choropleth(
+            locations=df['Code'],
+            z=df['Requests'],
+            text=df['Country'],
+            colorscale=[
+                [0, "rgb(5, 10, 172)"],
+                [0.35, "rgb(40, 60, 190)"],
+                [0.5, "rgb(70, 100, 245)"],
+                [0.6, "rgb(90, 120, 245)"],
+                [0.7, "rgb(106, 137, 247)"],
+                [1, "rgb(220, 220, 220)"]
+            ],
+            autocolorscale=False,
+            reversescale=True,
+            marker=go.choropleth.Marker(
+                line=go.choropleth.marker.Line(
+                    color='rgb(180,180,180)',
+                    width=0.5
+                )),
+            colorbar=go.choropleth.ColorBar(
+                tickprefix='',
+                title='Amount of Requests'),
         )]
-    )
 
-    fig = go.Figure(data=data, layout=layout)
-    # py.iplot(fig, filename = 'd3-world-map')
-    plotly.offline.plot(fig, filename='d3-world-map')
+        layout = go.Layout(
+            title=go.layout.Title(
+                text='Reequests to Server'
+            ),
+            geo=go.layout.Geo(
+                showframe=False,
+                showcoastlines=False,
+                projection=go.layout.geo.Projection(
+                    type='equirectangular'
+                )
+            ),
+            annotations=[go.layout.Annotation(
+                x=0.55,
+                y=0.1,
+                xref='paper',
+                yref='paper',
+                text='Source: ',
+                showarrow=False
+            )]
+        )
+
+        fig = go.Figure(data=data, layout=layout)
+        # py.iplot(fig, filename = 'd3-world-map')
+        plotly.offline.plot(fig, filename='d3-world-map'+str(index))
 
 
 # data = getTotalRequests()
