@@ -68,6 +68,10 @@ class databaseHandler:
         self.cur.execute("SELECT country, code FROM uniqueips WHERE ip = '" + ip + "'")
         return self.getResults(self.cur)[0]
 
+    def getCountryWithMostAttacks(self, ip):
+        self.cur.execute("SELECT country, count(ip) as totalCount FROM uniqueips INNER JOIN requests ON requests.remote_host = uniqueips.ip WHERE requests.request_type != 'OK' GROUP BY(country) ORDER BY totalCount DESC LIMIT 1")
+        return self.getResults(self.cur)[0]
+
 
 class dotdict(dict):
     __getattr__ = dict.get
