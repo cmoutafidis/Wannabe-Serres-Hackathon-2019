@@ -1,4 +1,5 @@
 from codes.parser import getTotalRequests, getTotalUniqueIps, getNotOkRequestsPerHour
+from codes.parserWithTime import getRequestsPerHour
 import matplotlib.pyplot as plt
 
 plt.rcdefaults()
@@ -6,8 +7,6 @@ import numpy as np
 import plotly
 import plotly.graph_objs as go
 import pandas as pd
-from codes.parser import getUniqueIPs
-from codes.parser import getRequestsPerIP
 import pycountry
 
 
@@ -56,16 +55,6 @@ def getPieGraphForAllTheRequestsPerIp():
 
 
 def getDataFrame(beforeDataFrame):
-    # uniqueIPs = getUniqueIPs(myData)
-    # x1, x2 = mapIpsToCountries(uniqueIPs)
-    # x, requestsPerIp = getRequestsPerIP(myData, uniqueIPs)
-    # countries, requestsPercountry = reqsPerCountry(list(uniqueIPs), requestsPerIp, x1)
-    # beforeDataFrame = []
-    # for index, country in enumerate(countries):
-    #     if country == "Russia":
-    #         country = 'Russian Federation'
-    #     beforeDataFrame.append([country, pycountry.countries.get(name=country).alpha_3, requestsPercountry[index]])
-    # df = pd.DataFrame(beforeDataFrame, columns=['Country', 'Code', 'Requests'])
     # Append the rest with 0
     df = pd.DataFrame(beforeDataFrame, columns=['Country', 'Code', 'Requests'])
     for i in range(len(pycountry.countries)):
@@ -80,7 +69,6 @@ def worldGraph():
     data = getNotOkRequestsPerHour()
     for index,hour in enumerate(data):
         df = getDataFrame(hour)
-        print(df)
         data = [go.Choropleth(
             locations=df['Code'],
             z=df['Requests'],
@@ -107,7 +95,7 @@ def worldGraph():
 
         layout = go.Layout(
             title=go.layout.Title(
-                text='Reequests to Server'
+                text='Requests to Server @'+str(index+1)+" hour of the day"
             ),
             geo=go.layout.Geo(
                 showframe=False,
@@ -127,7 +115,6 @@ def worldGraph():
         )
 
         fig = go.Figure(data=data, layout=layout)
-        # py.iplot(fig, filename = 'd3-world-map')
         plotly.offline.plot(fig, filename='d3-world-map'+str(index))
 
 
