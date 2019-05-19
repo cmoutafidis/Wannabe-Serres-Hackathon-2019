@@ -1,6 +1,8 @@
 import codes.databaseHandler as databaseHandler
 import codes.parser as parser
+import codes.parserWithTime as ptime
 import codes.dataMining as dm
+import codes.graphs as graphs
 import datetime
 
 
@@ -42,6 +44,16 @@ def executeSecondQuestion(allRecords,allNotOK,db):
 
     mostAttacks=db.getCountryWithMostAttacks()
     print('Country with most attacks is '+mostAttacks.country+" with "+str(mostAttacks.totalCount)+" attacks")
+
+
+def executeThirdQuestion(allRecords):
+    print("Visualization :")
+    #create the bar graph with requests/hour and save it @ RequestsPerHour_Bar.png
+    graphs.getBarGraphRequestsPerHour(ptime.getAllRequestsPerHour(allRecords))
+    print("Bar Graph for Requests per Hour has been created")
+    # create the bar graph with requests/hour and save it @ RequestsPerHour_Bar.png
+    graphs.getPieGraphForAllTheRequestsPerIp()
+    print
 
 
 db = databaseHandler.databaseHandler()
