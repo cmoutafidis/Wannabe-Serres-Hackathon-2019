@@ -1,6 +1,5 @@
 import operator
 from urllib.parse import unquote
-import codes.databaseHandler as databaseHandler
 
 restrictedSQLInjectionCharacters = ["'", ' or ', ' and ']
 restrictedXSSCharacters = ['http://', 'https://', '<script', 'script>', '<?php', '?>']
@@ -9,19 +8,16 @@ restrictedLFICharacters = ['../', '\\x', 'ls+-l']
 
 def getSQLInjectionRequests(data):
     curDict = getMatchesInListWithoutStringStrip(data, restrictedSQLInjectionCharacters)
-    # printMatches(curDict)
     return curDict
 
 
 def getXSSRequests(data):
     curDict = getMatchesInList(data, restrictedXSSCharacters)
-    # printMatches(curDict)
     return curDict
 
 
 def getLFIRequests(data):
     curDict = getMatchesInList(data, restrictedLFICharacters)
-    # printMatches(curDict)
     return curDict
 
 
@@ -85,27 +81,3 @@ def getMostAttackedWebsites(uniqueRequests,data):
     return maxims
 
 
-# db = databaseHandler.databaseHandler()
-#
-# data = db.selectAllRecords()
-# sqlDict = getSQLInjectionRequests()
-# xssDict = getXSSRequests()
-# lfiDict = getLFIRequests()
-#
-# print('Data len: ' + str(len(data)))
-# print('SQL Injection Requests: ' + str(len(sqlDict.keys())))
-# print('XSS Requests: ' + str(len(xssDict.keys())))
-# print('LFI Requests: ' + str(len(lfiDict.keys())))
-#
-# db.updateRecordsType(sqlDict.values(), 'SQLI')
-# db.updateRecordsType(xssDict.values(), 'XSS')
-# db.updateRecordsType(lfiDict.values(), 'LFI')
-#
-# uniqueRequests = getUniqueAttackRequests(sqlDict, xssDict, lfiDict)
-#
-# print('Percentage of requests that are attacks: ' + format(getPercentageOfServerAttackRequests(uniqueRequests), '.2f') + "%")
-# maxims = getMostAttackedWebsites(uniqueRequests)
-#
-# print('Most Visited Websites:')
-# for item in maxims:
-#     print(item + ": " + str(maxims.get(item)))

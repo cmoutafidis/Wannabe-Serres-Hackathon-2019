@@ -1,5 +1,4 @@
 from codes.parser import getTotalRequests, getTotalUniqueIps, getNotOkRequestsPerHour
-from codes.parserWithTime import getAllRequestsPerHour
 import matplotlib.pyplot as plt
 
 plt.rcdefaults()
@@ -116,9 +115,3 @@ def worldGraph():
 
         fig = go.Figure(data=data, layout=layout)
         plotly.offline.plot(fig, filename='d3-world-map'+str(index))
-
-
-data = getTotalRequests()
-# getBarGraphRequestsPerHour(getAllRequestsPerHour(data))
-getPieGraphForAllTheRequestsPerIp()
-# worldGraph()

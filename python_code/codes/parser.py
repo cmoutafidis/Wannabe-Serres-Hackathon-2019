@@ -3,8 +3,6 @@ import requests
 import codes.databaseHandler as databaseHandler
 
 
-# from pprint import pprint
-
 def getTotalRequests():
     '''
 
@@ -90,11 +88,21 @@ def getRequestsPerIP(data, unique_ips=[]):
         requestPerIp[unique_ips.index(request.get("remote_host"))] += 1
     return unique_ips,requestPerIp
 
+def evaluate(normal, sqli,xss,lfi):
+    return normal*1-(sqli+xss)*10-lfi*20
 
-# data = getTotalRequests()
-# insertUniqueIps(getUniqueIPs(data))
-#
-# print("Total number of requests: "+str(len(data)))
-# print("Number of 5xx requests: " + str(get5xxRequests(data)))
-# for ip in getUniqueIPs(data):
-#     print(ip)
+def getWorstCountry():
+    db = databaseHandler.databaseHandler()
+    data=db.getRequestTypesPerIp()
+    results=[]
+    for request in data:
+        results.append([request.ip,int(evaluate(request.ok,request.sqli,request.xss,request.lfi))])
+    worst=min([i[1] for i in results])
+    ip=""
+    for i in results:
+        if i[1]==worst:
+            ip=i[0]
+            break
+    for record in data:
+        if record.ip==ip:
+            return record

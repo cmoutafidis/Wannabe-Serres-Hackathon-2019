@@ -3,7 +3,6 @@ import codes.parser as parser
 import codes.parserWithTime as ptime
 import codes.dataMining as dm
 import codes.graphs as graphs
-import datetime
 
 
 def executeFirstQuestion(allRecords):
@@ -59,7 +58,8 @@ def executeThirdQuestion(allRecords):
     print(" HTML files for World Graphs has been created")
 
 def executeWorstIp():
-    print("Worst ip")
+    record=parser.getWorstCountry()
+    print("Most harmful ip is "+record.ip+" with:\n "+str(record.ok)+" Normal Requests,\n "+str(record.sqli)+" SQL Injection requests,\n "+str(record.xss)+" XSS requests,\n "+str(record.lfi)+" Local File Injection requests,\n")
 
 
 db = databaseHandler.databaseHandler()
@@ -69,3 +69,4 @@ allRecords = db.selectAllRecords()
 executeFirstQuestion(allRecords)
 executeSecondQuestion(allRecords, allNotOk, db)
 executeThirdQuestion(allRecords)
+executeWorstIp()

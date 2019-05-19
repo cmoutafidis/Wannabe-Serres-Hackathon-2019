@@ -24,14 +24,3 @@ def getAllRequestsPerHour(data):
         requestsPerHour[
             datetime.datetime.strptime(request.get('time_received_tz_isoformat'), "%Y-%m-%dT%H:%M:%S+02:00").hour]+=1
     return requestsPerHour
-
-
-# data = getTotalRequests()
-#
-# for hour in getRequestsPerHour(data):
-#     print(hour)
-#
-# print(sum(getRequestsPerHour(data)))
-# print(data[0].keys())
-# print(data[0].values())
-# print(len(data))
