@@ -50,10 +50,16 @@ def executeThirdQuestion(allRecords):
     print("Visualization :")
     #create the bar graph with requests/hour and save it @ RequestsPerHour_Bar.png
     graphs.getBarGraphRequestsPerHour(ptime.getAllRequestsPerHour(allRecords))
-    print("Bar Graph for Requests per Hour has been created")
-    # create the bar graph with requests/hour and save it @ RequestsPerHour_Bar.png
+    print(" Bar Graph for Requests per Hour has been created")
+    # create the pie graph with requests/country and save it @ RequestsPerCountry_PieChart
     graphs.getPieGraphForAllTheRequestsPerIp()
-    print
+    print(" Pie Chart for requests per Country has been created ")
+    # create the 24 html files, world map with countries request / hour
+    graphs.worldGraph()
+    print(" HTML files for World Graphs has been created")
+
+def executeWorstIp():
+    print("Worst ip")
 
 
 db = databaseHandler.databaseHandler()
@@ -62,3 +68,4 @@ allRecords = db.selectAllRecords()
 
 executeFirstQuestion(allRecords)
 executeSecondQuestion(allRecords, allNotOk, db)
+executeThirdQuestion(allRecords)
